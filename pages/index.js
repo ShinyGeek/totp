@@ -2,7 +2,9 @@ import Head from 'next/head'
 import { Link } from 'next';
 import styles from '../styles/Home.module.css'
 import { Button } from 'react-bootstrap';
-import getToken from './client';
+import secure from '../shared/secure';
+
+const { getToken } = secure;
 
 export default function Home() {
 

@@ -15,5 +15,9 @@ const getToken = () => {
   return token;  
 }
 
-export default getToken;
+const secure = {
+  getToken
+}
+
+export default secure;
 
