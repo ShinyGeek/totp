@@ -3,16 +3,27 @@ import { Link } from 'next';
 import styles from '../styles/Home.module.css'
 import { Button } from 'react-bootstrap';
 import secure from '../shared/secure';
+import { useState } from 'react';
 
 const { getToken } = secure;
 
 export default function Home() {
 
-  const sendToken = () => {
+  const [result, setResult] = useState(null);
+
+  const sendToken = async () => {
     var token = getToken();
-    fetch(`http://localhost:3000/api/test?token=${token}`).then(data => {
-      console.log('data', data);
-    })
+
+    const response = await fetch(`http://localhost:3000/api/test`,
+      { headers: { "totp-token": `${token}` } }
+    )
+    const tex = await response.text();
+
+    setResult(tex);
+  }
+
+  const clearResult = () => {
+    setResult(null)    ;
   }
 
   return (
@@ -32,7 +43,8 @@ export default function Home() {
           <code className={styles.code}>pages/index.js</code>
         </p>
 
-        <Button onClick={sendToken}>Click Me</Button>
+        <Button onClick={sendToken} onMouseDown={clearResult}>Click Me</Button>
+        <div>{result}</div>
       </main>
 
       <footer className={styles.footer}>
