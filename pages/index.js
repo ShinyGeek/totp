@@ -13,6 +13,7 @@ export default function Home() {
 
   const sendToken = async () => {
     var token = getToken();
+    console.log(`Token: ${token}`);
 
     const response = await fetch(`http://localhost:3000/api/test`,
       { headers: { "totp-token": `${token}` } }

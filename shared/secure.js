@@ -1,4 +1,5 @@
 import speakeasy from 'speakeasy';
+import { totp } from 'otplib';
 import keys from './keys.json';
 
 var last = 0;
@@ -21,15 +22,24 @@ const getToken = () => {
   // create the string format of the index e.g. '09'
   const idxstr= index.toString().padStart(2, '0');
 
-  var token = speakeasy.totp(
-    {
-      secret: key,
-      step: 1,
-      digits: 8,
-      encoding: 'hex',
-      algorithm: 'sha256'
-    }
-  );
+  totp.options = {
+    step: 1,
+    digits: 8,
+    encoding: 'hex',
+    algorithm: 'sha256'
+  }
+
+  var token = totp.generate(key);
+  // var token = speakeasy.totp(
+  //   {
+  //     secret: key,
+  //     step: 1,
+  //     digits: 8,
+  //     encoding: 'hex',
+  //     algorithm: 'sha256'
+  //   }
+  // );
+
   return token.concat(idxstr);  
 }
 
@@ -45,17 +55,30 @@ const validateToken = (tokenAll) => {
   // get the key
   const key = keys[index];
 
-  const valid = speakeasy.totp.verify(
-    {
-      secret: key,
-      token,
-      window: 1,
-      step: 1,
-      digits: 8,
-      encoding: 'hex',
-      algorithm: 'sha256'
-    }
-  );
+  totp.options = {
+    secret: key,
+    token,
+    window: 1,
+    step: 1,
+    digits: 8,
+    encoding: 'hex',
+    algorithm: 'sha256'
+  }
+
+  const valid = totp.verify({token,secret: key});
+
+  // const valid = speakeasy.totp.verify(
+  //   {
+  //     secret: key,
+  //     token,
+  //     window: 1,
+  //     step: 1,
+  //     digits: 8,
+  //     encoding: 'hex',
+  //     algorithm: 'sha256'
+  //   }
+  // );
+
   return valid;
 }
 
