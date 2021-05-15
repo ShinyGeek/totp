@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import { Link } from 'next';
 import styles from '../styles/Home.module.css'
-import { Button } from 'react-bootstrap';
+import { Button, InputGroup, FormControl } from 'react-bootstrap';
 import secure from '../shared/secure';
 import { useState } from 'react';
 
@@ -10,9 +10,10 @@ const { getToken } = secure;
 export default function Home() {
 
   const [result, setResult] = useState(null);
+  const [key, setKey] = useState('');
 
   const sendToken = async () => {
-    var token = getToken();
+    var token = key; //getToken();
     console.log(`Token: ${token}`);
 
     const response = await fetch(`http://localhost:3000/api/test`,
@@ -24,7 +25,11 @@ export default function Home() {
   }
 
   const clearResult = () => {
-    setResult(null)    ;
+    setResult(null);
+  }
+
+  const textChanged = (value) => {
+    setKey(value);
   }
 
   return (
@@ -45,19 +50,21 @@ export default function Home() {
         </p>
 
         <Button onClick={sendToken} onMouseDown={clearResult}>Click Me</Button>
+        <InputGroup className="mb-3">
+          <InputGroup.Prepend>
+            <InputGroup.Text id="basic-addon1">2FA Code</InputGroup.Text>
+          </InputGroup.Prepend>
+          <FormControl
+            as="input"
+            value={key}
+            onChange={(e) => {textChanged(e.target.value)}}
+          />
+        </InputGroup>
         <div>{result}</div>
+
       </main>
 
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
+
     </div>
   )
 }
