@@ -18,9 +18,9 @@ const getToken = () => {
 
   // extract the key
   const key = keys[index];
-  
+
   // create the string format of the index e.g. '09'
-  const idxstr= index.toString().padStart(2, '0');
+  const idxstr = index.toString().padStart(2, '0');
 
   totp.options = {
     step: 1,
@@ -30,17 +30,8 @@ const getToken = () => {
   }
 
   var token = totp.generate(key);
-  // var token = speakeasy.totp(
-  //   {
-  //     secret: key,
-  //     step: 1,
-  //     digits: 8,
-  //     encoding: 'hex',
-  //     algorithm: 'sha256'
-  //   }
-  // );
 
-  return token.concat(idxstr);  
+  return token.concat(idxstr);
 }
 
 const validateToken = (tokenAll) => {
@@ -56,8 +47,6 @@ const validateToken = (tokenAll) => {
   const key = keys[index];
 
   totp.options = {
-    secret: key,
-    token,
     window: 1,
     step: 1,
     digits: 8,
@@ -65,19 +54,7 @@ const validateToken = (tokenAll) => {
     algorithm: 'sha256'
   }
 
-  const valid = totp.verify({token,secret: key});
-
-  // const valid = speakeasy.totp.verify(
-  //   {
-  //     secret: key,
-  //     token,
-  //     window: 1,
-  //     step: 1,
-  //     digits: 8,
-  //     encoding: 'hex',
-  //     algorithm: 'sha256'
-  //   }
-  // );
+  const valid = totp.verify({ token, secret: key });
 
   return valid;
 }
